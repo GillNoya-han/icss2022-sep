@@ -42,8 +42,57 @@ MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
 
 
+//--- PARSER ---//
+
+stylesheet
+    : (variable | cssRule)* EOF
+    ;
+
+// Herkent een variabele, zoals LinkColor := #ff0000;
+variable
+    : CAPITAL_IDENT ASSIGNMENT_OPERATOR value SEMICOLON
+    ;
+
+// Detecteert element-, ID- en class-selectors
+selector
+    : LOWER_IDENT
+    | ID_IDENT
+    | CLASS_IDENT
+    ;
+
+// Herkent een CSS-property
+property
+    : LOWER_IDENT
+    ;
+
+// Herkent een declaratie tussen accolades
+declaration
+    : property COLON value SEMICOLON
+    ;
+
+// Herkent een volledige CSS-regel
+cssRule
+    : selector OPEN_BRACE declaration* CLOSE_BRACE
+    ;
+
+// Herkent letterlijke waarden
+literal
+    : TRUE
+    | FALSE
+    | PIXELSIZE
+    | PERCENTAGE
+    | SCALAR
+    ;
+
+// Herkent waarden die bij CSS-properties horen
+value
+    : literal
+    | COLOR
+    | LOWER_IDENT
+    | CAPITAL_IDENT
+    ;
 
 
-//--- PARSER: ---
-stylesheet: EOF;
+
+
 
