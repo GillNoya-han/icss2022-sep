@@ -1,39 +1,34 @@
+
 grammar ICSS;
 
-//--- LEXER: ---
+//--- LEXER ---
 
-// IF support:
 IF: 'if';
 ELSE: 'else';
 BOX_BRACKET_OPEN: '[';
 BOX_BRACKET_CLOSE: ']';
 
-
-//Literals
 TRUE: 'TRUE';
 FALSE: 'FALSE';
 PIXELSIZE: [0-9]+ 'px';
 PERCENTAGE: [0-9]+ '%';
 SCALAR: [0-9]+;
 
+COLOR: '#' [0-9a-f] [0-9a-f] [0-9a-f]
+             [0-9a-f] [0-9a-f] [0-9a-f];
 
-//Color value takes precedence over id idents
-COLOR: '#' [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f];
-
-//Specific identifiers for id's and css classes
 ID_IDENT: '#' [a-z0-9\-]+;
 CLASS_IDENT: '.' [a-z0-9\-]+;
 
-//General identifiers
 LOWER_IDENT: [a-z] [a-z0-9\-]*;
 CAPITAL_IDENT: [A-Z] [A-Za-z0-9_]*;
 
-//All whitespace is skipped
 WS: [ \t\r\n]+ -> skip;
 
-//
 OPEN_BRACE: '{';
 CLOSE_BRACE: '}';
+OPEN_PAREN: '(';
+CLOSE_PAREN: ')';
 SEMICOLON: ';';
 COLON: ':';
 PLUS: '+';
@@ -42,40 +37,60 @@ MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
 
 
-//--- PARSER ---//
-
+//--- PARSER ---
 stylesheet
     : (variable | cssRule)* EOF
     ;
 
-// Herkent een variabele, zoals LinkColor := #ff0000;
+// Variabelen, in formaat: Naam := berekening/waarde;
 variable
-    : CAPITAL_IDENT ASSIGNMENT_OPERATOR value SEMICOLON
+    : CAPITAL_IDENT ASSIGNMENT_OPERATOR expression SEMICOLON
     ;
 
-// Detecteert element-, ID- en class-selectors
+// Selectors voor elementen, ID's en classes
 selector
     : LOWER_IDENT
     | ID_IDENT
     | CLASS_IDENT
     ;
 
-// Herkent een CSS-property
+// CSS-property
 property
     : LOWER_IDENT
     ;
 
-// Herkent een declaratie tussen accolades
-declaration
-    : property COLON value SEMICOLON
-    ;
-
-// Herkent een volledige CSS-regel
+// CSS-regel met declarations
 cssRule
     : selector OPEN_BRACE declaration* CLOSE_BRACE
     ;
 
-// Herkent letterlijke waarden
+// CSS-declaratie, bijvoorbeeld: width: ParWidth;
+declaration
+    : property COLON expression SEMICOLON
+    ;
+
+// Optellen en aftrekken
+expression
+    : expression (PLUS | MIN) multiplication
+    | multiplication
+    ;
+
+// Vermenigvuldige
+multiplication
+    : multiplication MUL factor
+    | factor
+    ;
+
+// Waarden, variabelen en haakjes
+factor
+    : literal
+    | COLOR
+    | LOWER_IDENT
+    | CAPITAL_IDENT
+    | OPEN_PAREN expression CLOSE_PAREN
+    ;
+
+// Letterlijke waarden
 literal
     : TRUE
     | FALSE
@@ -83,16 +98,3 @@ literal
     | PERCENTAGE
     | SCALAR
     ;
-
-// Herkent waarden die bij CSS-properties horen
-value
-    : literal
-    | COLOR
-    | LOWER_IDENT
-    | CAPITAL_IDENT
-    ;
-
-
-
-
-
