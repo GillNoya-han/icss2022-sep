@@ -87,7 +87,7 @@ public class ASTListener extends ICSSBaseListener {
     // Bouwt de AST voor optellen en aftrekken.
     @Override
     public void enterExpression(ICSSParser.ExpressionContext ctx) {
-        if (ctx.term() == null) {
+        if (ctx.multiplication() == null) {
             return;
         }
 
@@ -107,15 +107,15 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void exitExpression(ICSSParser.ExpressionContext ctx) {
-        if (ctx.expression() != null && ctx.term() != null) {
+        if (ctx.expression() != null && ctx.multiplication() != null) {
             currentContainer.pop();
         }
     }
 
     // Bouwt de AST voor vermenigvuldigen.
     @Override
-    public void enterTerm(ICSSParser.TermContext ctx) {
-        if (ctx.term() != null && ctx.MUL() != null) {
+    public void enterMultiplication(ICSSParser.MultiplicationContext ctx) {
+        if (ctx.multiplication() != null && ctx.MUL() != null) {
             Operation operation = new MultiplyOperation();
 
             currentContainer.peek().addChild(operation);
@@ -124,8 +124,8 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void exitTerm(ICSSParser.TermContext ctx) {
-        if (ctx.term() != null && ctx.MUL() != null) {
+    public void exitMultiplication(ICSSParser.MultiplicationContext ctx) {
+        if (ctx.multiplication() != null && ctx.MUL() != null) {
             currentContainer.pop();
         }
     }
