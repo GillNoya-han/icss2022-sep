@@ -61,7 +61,7 @@ property
 
 // CSS-regel met declarations
 cssRule
-    : selector OPEN_BRACE declaration* CLOSE_BRACE
+    : selector OPEN_BRACE statementBody* CLOSE_BRACE
     ;
 
 // CSS-declaratie, bijvoorbeeld: width: ParWidth;
@@ -97,4 +97,26 @@ literal
     | PIXELSIZE
     | PERCENTAGE
     | SCALAR
+    ;
+
+// Declareert statements of waarden
+statementBody
+    : declaration
+    | ifStatement
+    ;
+
+// If- en else-statements
+ifStatement
+    : IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE
+      OPEN_BRACE statementBody* CLOSE_BRACE
+      elseStatement?
+    ;
+
+elseStatement
+    : ELSE OPEN_BRACE statementBody* CLOSE_BRACE
+    ;
+
+// Voorwaarde van een if-statement
+condition
+    : CAPITAL_IDENT
     ;
