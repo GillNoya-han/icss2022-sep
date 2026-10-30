@@ -130,6 +130,32 @@ public class ASTListener extends ICSSBaseListener {
         }
     }
 
+    @Override
+    public void enterIfStatement(ICSSParser.IfStatementContext ctx) {
+        IfClause ifClause = new IfClause();
+
+        currentContainer.peek().addChild(ifClause);
+        currentContainer.push(ifClause);
+    }
+
+    @Override
+    public void exitIfStatement(ICSSParser.IfStatementContext ctx) {
+        currentContainer.pop();
+    }
+
+    @Override
+    public void enterElseStatement(ICSSParser.ElseStatementContext ctx) {
+        ElseClause elseClause = new ElseClause();
+
+        currentContainer.peek().addChild(elseClause);
+        currentContainer.push(elseClause);
+    }
+
+    @Override
+    public void exitElseStatement(ICSSParser.ElseStatementContext ctx) {
+        currentContainer.pop();
+    }
+
     // Verwerkt literals, kleuren en variabelen.
     @Override
     public void enterFactor(ICSSParser.FactorContext ctx) {
