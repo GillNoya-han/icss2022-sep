@@ -101,7 +101,8 @@ literal
 
 // Declareert statements of waarden
 statementBody
-    : declaration
+    : variable
+    | declaration
     | ifStatement
     ;
 
