@@ -10,14 +10,12 @@ public class Generator {
 
 	public String generate(AST ast) {
 		StringBuilder css = new StringBuilder();
-
-		// Genereer CSS voor iedere stylerule.
+		// Genereer CSS voor iedere styleRule.
 		for (ASTNode node : ast.root.getChildren()) {
 			if (node instanceof Stylerule) {
 				generateRule((Stylerule) node, css);
 			}
 		}
-
 		return css.toString();
 	}
 
@@ -31,7 +29,6 @@ public class Generator {
 		}
 
 		css.append(" {\n");
-
 		// Schrijf alle declarations in de regel.
 		for (ASTNode node : rule.body) {
 			if (node instanceof Declaration) {
@@ -44,7 +41,6 @@ public class Generator {
 						.append(";\n");
 			}
 		}
-
 		css.append("}\n\n");
 	}
 
@@ -59,7 +55,6 @@ public class Generator {
 		if (selector instanceof ClassSelector) {
 			return selector.getNodeLabel().replace("ClassSelector ", "");
 		}
-
 		return selector.getNodeLabel();
 	}
 
@@ -79,14 +74,10 @@ public class Generator {
 			return String.valueOf(((ScalarLiteral) expression).value);
 		}
 		if (expression instanceof ColorLiteral) {
-			return expression.getNodeLabel()
-					.replace("Color literal (", "")
-					.replace(")", "");
+			return expression.getNodeLabel().replace("Color literal (", "").replace(")", "");
 		}
 		if (expression instanceof BoolLiteral) {
-			return expression.getNodeLabel()
-					.replace("Bool Literal (", "")
-					.replace(")", "");
+			return expression.getNodeLabel().replace("Bool Literal (", "").replace(")", "");
 		}
 		if (expression instanceof VariableReference) {
 			return ((VariableReference) expression).name;
@@ -106,10 +97,7 @@ public class Generator {
 			} else {
 				return "";
 			}
-
-			return generateExpression(operation.lhs)
-					+ operator
-					+ generateExpression(operation.rhs);
+			return generateExpression(operation.lhs) + operator + generateExpression(operation.rhs);
 		}
 
 		return expression.getNodeLabel();
